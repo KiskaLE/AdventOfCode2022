@@ -3,6 +3,9 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class day8 {
+    static int up, down, left, right;
+    static List<Integer> watchDistance = new ArrayList<>();
+
     public static void main(String[] args) {
         int[][] treeMap;
         try {
@@ -14,27 +17,88 @@ public class day8 {
         for (int i = 0; i < treeMap.length; i++) {
             for (int j = 0; j < treeMap[i].length; j++) {
                 int tree = treeMap[i][j];
-                if (isVisibleUp(tree) || isVisibleDown(tree) || isVisibleLeft(tree) || isVisibleRight(tree)) {
+                if (isVisibleUp(tree, j, i, treeMap) || isVisibleDown(tree, j, i, treeMap) || isVisibleLeft(tree, j, i, treeMap) || isVisibleRight(tree, j, i, treeMap)) {
                     part1++;
                 }
+                //part2
+                isVisibleUp(tree, j, i, treeMap);
+                isVisibleDown(tree, j, i, treeMap);
+                isVisibleLeft(tree, j, i, treeMap);
+                isVisibleRight(tree, j, i, treeMap);
+                watchDistance.add(getWatchDistance());
             }
         }
-    }
-//TODO dodělat funkce:
-    private static boolean isVisibleRight(int tree) {
-        return false;
+        System.out.println("part1: " + part1);
+        System.out.println("part2: " + part2());
     }
 
-    private static boolean isVisibleLeft(int tree) {
-        return false;
+    private static String part2() {
+        Collections.sort(watchDistance);
+        return watchDistance.get(watchDistance.size()-1).toString();
     }
 
-    private static boolean isVisibleDown(int tree) {
-        return false;
+    private static int getWatchDistance() {
+        return up * down * left * right;
     }
 
-    private static boolean isVisibleUp(int tree) {
-        return false;
+    static boolean isVisibleRight(int tree, int x, int y, int[][] treeMap) {
+        int sumOfTrees = 0;
+        boolean b = true;
+        for (int i = x + 1; i < treeMap[y].length; i++) {
+            if (treeMap[y][i] >= tree) {
+                b = false;
+                sumOfTrees++;
+                break;
+            }
+            sumOfTrees++;
+        }
+        right = sumOfTrees;
+        return b;
+    }
+
+    static boolean isVisibleLeft(int tree, int x, int y, int[][] treeMap) {
+        int sumOfTrees = 0;
+        boolean b = true;
+        for (int i = x - 1; i >= 0; i--) {
+            if (treeMap[y][i] >= tree) {
+                b = false;
+                sumOfTrees++;
+                break;
+            }
+            sumOfTrees++;
+        }
+        left = sumOfTrees;
+        return b;
+    }
+
+    static boolean isVisibleDown(int tree, int x, int y, int[][] treeMap) {
+        int sumOfTrees = 0;
+        boolean b = true;
+        for (int i = y + 1; i < treeMap.length; i++) {
+            if (treeMap[i][x] >= tree) {
+                b = false;
+                sumOfTrees++;
+                break;
+            }
+            sumOfTrees++;
+        }
+        down = sumOfTrees;
+        return b;
+    }
+
+    static boolean isVisibleUp(int tree, int x, int y, int[][] treeMap) {
+        int sumOfTrees = 0;
+        boolean b = true;
+        for (int i = y - 1; i >= 0; i--) {
+            if (treeMap[i][x] >= tree) {
+                b = false;
+                sumOfTrees++;
+                break;
+            }
+            sumOfTrees++;
+        }
+        up = sumOfTrees;
+        return b;
     }
 
     private static int[][] generateMap(File input) throws FileNotFoundException {
