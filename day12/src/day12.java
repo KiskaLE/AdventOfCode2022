@@ -5,7 +5,8 @@ import java.util.*;
 public class day12 {
 
     public static void main(String[] args) {
-
+        PathFinding pathFinding = new PathFinding(new File("day12/input"));
     }
+
 
 }

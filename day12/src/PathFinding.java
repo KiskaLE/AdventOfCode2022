@@ -1,37 +1,119 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+// https://en.wikipedia.org/wiki/Pathfinding
 public class PathFinding {
-    String[][] map;
-    public PathFinding(){
+    char[][] map;
+    Point[][] counterMap;
+    private int startX, startY, endX, endY;
 
+    public PathFinding(File input) {
+        appendInput(input);
     }
 
-    public int getLenght(){
+    //TODO dodělat getLenght
+    public int getLenght(int startX, int startY, int endX, int endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
 
+        createMapCounters();
         return 0;
     }
 
-    public void appendInput(File inputFile){
-        List<String> input= new ArrayList<>();
+    private void appendInput(File inputFile) {
+        List<String> input = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(inputFile);
             while (scanner.hasNextLine()) {
                 input.add(scanner.nextLine());
             }
-            this.map = new String[input.size()][input.get(0).length()];
+            this.map = new char[input.size()][input.get(0).length()];
             for (int i = 0; i < input.size(); i++) {
                 String line = input.get(i);
                 for (int j = 0; j < line.length(); j++) {
-                    map[i][j] = String.valueOf(line.charAt(j));
+                    map[i][j] = line.charAt(j);
                 }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("File was not found: "+e);
+            System.out.println("File was not found: " + e);
         }
     }
+
+    private void createMapCounters() {
+        List<Point> list = createQueue(startX, startY, endX, endY);
+        System.out.println();
+    }
+
+    private List<Point> createQueue(final int startX, final int startY, final int endX, final int endY) {
+        List<Point> queue = new ArrayList<>();
+        queue.add(new Point(endX, endY, 0));
+        int count = 1;
+        boolean repeat = true;
+        while (repeat) {
+            List<Point> children = new ArrayList<>();
+            for (Point parent : queue) {
+                if (parent.count == count - 1) {
+                    children.add(new Point(parent.x + 1, parent.y, count));
+                    children.add(new Point(parent.x, parent.y + 1, count));
+                    children.add(new Point(parent.x - 1, parent.y, count));
+                    children.add(new Point(parent.x, parent.y - 1, count));
+                    //remove duplicated
+                    //children = children.stream().distinct().collect(Collectors.toList());
+                    //remove not valid Points
+                    List<Point> remove = new ArrayList<>();
+                    for (int i = 0; i < children.size(); i++) {
+                        Point child = children.get(i);
+                        if (child.x < 0 || child.y < 0 || child.x >= map.length || child.y >= map[child.x].length) {
+                            remove.add(child);
+                        } else {
+                            int childValue = Character.valueOf(map[child.x][child.y]);
+                            int parentValue = Character.valueOf(map[parent.x][parent.y]);
+                            if (!(parentValue <= childValue + 1)) {
+                                remove.add(child);
+                            }
+                        }
+
+                    }
+                try {
+                    children.removeAll(remove);
+                }
+                catch (Exception e) {
+                }
+
+
+
+                //remove duplicates in queue
+                remove = new ArrayList<>();
+                for (int i = 0; i < children.size(); i++) {
+                    Point child = children.get(i);
+                    //remove duplicates in queue
+                    for (Point oneQueue : queue) {
+                        if (oneQueue.x == child.x && oneQueue.y == child.y) {
+                            remove.add(child);
+                            break;
+                        }
+                    }
+                }
+                children.removeAll(remove);
+
+            }
+        }
+        Collections.addAll(queue, children.toArray(new Point[0]));
+        for (int i = 0; i < children.size(); i++) {
+            Point child = children.get(i);
+            if (child.x == startX && child.y == startY) repeat = false;
+        }
+        count++;
+    }
+        return queue;
 }
+}
+
