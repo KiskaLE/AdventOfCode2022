@@ -8,7 +8,8 @@ class day12Test {
 
     @Test
     public void TestApp(){
-        assertEquals(31, day12.part1("testFile.txt"));
+        PathFinding pathFinding = new PathFinding();
+        assertEquals(31, pathFinding.getLenght());
     }
 
 }
