@@ -5,7 +5,9 @@ import java.util.*;
 public class day12 {
 
     public static void main(String[] args) {
-        PathFinding pathFinding = new PathFinding(new File("day12/input"));
+        System.out.println("SbccccccccaaaaaccccccccaacaaccccccccaaaaaaaaaaccccccccccaaaaaaccccccccccccaaacccaaccccccccccccccaaaacccaaaaaiiiqqtttxxxxE".length());
+        PathFinding pathFinding = new PathFinding(new File("day12/input.txt"), 20, 0, 20, 121);
+        System.out.println("Part1: "+ pathFinding.getLenght());
     }
 
 

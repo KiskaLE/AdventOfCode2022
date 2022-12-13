@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // https://en.wikipedia.org/wiki/Pathfinding
@@ -12,19 +9,19 @@ public class PathFinding {
     Point[][] counterMap;
     private int startX, startY, endX, endY;
 
-    public PathFinding(File input) {
+    public PathFinding(File input, int startX, int startY, int endX, int endY) {
         appendInput(input);
-    }
-
-    //TODO dodělat getLenght
-    public int getLenght(int startX, int startY, int endX, int endY) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+    }
 
-        createMapCounters();
-        return 0;
+    //TODO dodělat getLenght
+    public int getLenght() {
+        List<Point> list = createQueue(startX, startY, endX, endY);
+
+        return list.get(list.size()-1).count;
     }
 
     private void appendInput(File inputFile) {
@@ -47,13 +44,9 @@ public class PathFinding {
         }
     }
 
-    private void createMapCounters() {
-        List<Point> list = createQueue(startX, startY, endX, endY);
-        System.out.println();
-    }
 
     private List<Point> createQueue(final int startX, final int startY, final int endX, final int endY) {
-        List<Point> queue = new ArrayList<>();
+        List<Point> queue = new LinkedList<>();
         queue.add(new Point(endX, endY, 0));
         int count = 1;
         boolean repeat = true;
@@ -112,6 +105,7 @@ public class PathFinding {
             if (child.x == startX && child.y == startY) repeat = false;
         }
         count++;
+            System.out.println(count);
     }
         return queue;
 }
