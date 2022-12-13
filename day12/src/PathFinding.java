@@ -85,7 +85,7 @@ public class PathFinding {
 
                 //remove duplicates in queue
                 remove = new ArrayList<>();
-                for (int i = 0; i < children.size(); i++) {
+                for (int i = children.size();  i >= 0; i-- ) {
                     Point child = children.get(i);
                     //remove duplicates in queue
                     for (Point oneQueue : queue) {
