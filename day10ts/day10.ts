@@ -1,7 +1,12 @@
 import * as fs from "fs";
 
 function parseInput(url: string): string[] {
-  const lines = fs.readFileSync(url).toString().split("\n");
-
-  return lines;
+  return fs.readFileSync(url).toString().split("\r\n");
 }
+
+function part1(): void {
+  const lines = parseInput("input.txt");
+  console.log(lines);
+}
+
+part1();
