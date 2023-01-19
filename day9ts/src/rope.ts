@@ -4,11 +4,15 @@ export default class Rope {
   child: Point;
   locations: Point[];
   parentLastPosition: Point;
+  storeLoacation: boolean;
+  childLastPosition: { x: number; y: number };
   constructor(point: Point) {
     this.parent = { ...point };
     this.child = { ...point };
     this.locations = [];
     this.parentLastPosition = { ...point };
+    this.childLastPosition = { ...point };
+    this.storeLoacation = false;
   }
 
   public move(move: string): void {
@@ -31,20 +35,22 @@ export default class Rope {
     }
     this.moveChild();
   }
-  private moveChild(): void {
+  public moveChild(): void {
     if (
       Math.abs(this.parent.x - this.child.x) > 1 ||
       Math.abs(this.parent.y - this.child.y) > 1
     ) {
-      this.child = this.parentLastPosition;
-      //add of unique
-      if (this.isUnique()) {
+      this.childLastPosition = { ...this.child };
+      this.child = { ...this.parentLastPosition };
+      if (this.storeLoacation && this.isUnique()) {
         this.locations.push(this.child);
       }
     } else {
     }
   }
-
+  public setStoreLoacation(store: boolean): void {
+    this.storeLoacation = store;
+  }
   public getUniqueLocations(): number {
     return this.locations.length + 1;
   }
@@ -62,8 +68,10 @@ export default class Rope {
     return this.child;
   }
   public setParent(parent: Point): void {
-    this.parent = { ...parent };
-    this.parentLastPosition = this.parent;
+    this.parent = parent;
+  }
+  public moveSecond(): void {
+    this.parentLastPosition = { ...this.parent };
     this.moveChild();
   }
 

@@ -6,6 +6,8 @@ class Rope {
         this.child = Object.assign({}, point);
         this.locations = [];
         this.parentLastPosition = Object.assign({}, point);
+        this.childLastPosition = Object.assign({}, point);
+        this.storeLoacation = false;
     }
     move(move) {
         this.parentLastPosition = Object.assign({}, this.parent);
@@ -30,14 +32,17 @@ class Rope {
     moveChild() {
         if (Math.abs(this.parent.x - this.child.x) > 1 ||
             Math.abs(this.parent.y - this.child.y) > 1) {
-            this.child = this.parentLastPosition;
-            //add of unique
-            if (this.isUnique()) {
+            this.childLastPosition = Object.assign({}, this.child);
+            this.child = Object.assign({}, this.parentLastPosition);
+            if (this.storeLoacation && this.isUnique()) {
                 this.locations.push(this.child);
             }
         }
         else {
         }
+    }
+    setStoreLoacation(store) {
+        this.storeLoacation = store;
     }
     getUniqueLocations() {
         return this.locations.length + 1;
@@ -55,8 +60,10 @@ class Rope {
         return this.child;
     }
     setParent(parent) {
-        this.parent = Object.assign({}, parent);
-        this.parentLastPosition = this.parent;
+        this.parent = parent;
+    }
+    moveSecond() {
+        this.parentLastPosition = Object.assign({}, this.parent);
         this.moveChild();
     }
     toString() {

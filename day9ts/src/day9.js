@@ -28,17 +28,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const rope_1 = __importDefault(require("./rope"));
-let moves = [];
+const ropeV2_1 = __importDefault(require("./ropeV2"));
 function parseMoves(url) {
+    let moves = [];
     let lines = fs.readFileSync(url).toString().split("\n");
     lines.forEach((line) => {
         let move = line.replace(new RegExp(/[0-9 ]/g), "");
         let numberOfMoves = parseInt(line.replace(new RegExp(/[A-Z ]/gi), ""));
         moves.push({ move: move, numberOfMoves: numberOfMoves });
     });
+    return moves;
 }
 function part1() {
+    const moves = parseMoves("input.txt");
     let rope = new rope_1.default({ x: 0, y: 0 });
+    rope.setStoreLoacation(true);
     moves.forEach((move) => {
         for (let i = 0; i < move.numberOfMoves; i++) {
             rope.move(move.move);
@@ -46,6 +50,15 @@ function part1() {
     });
     console.log(rope.getUniqueLocations());
 }
-parseMoves("input.txt");
+function part2() {
+    const moves = parseMoves("input.txt");
+    let rope = new ropeV2_1.default({ x: 0, y: 0 }, 10);
+    moves.forEach((move) => {
+        rope.move(move);
+    });
+    console.log(rope.getUniqueLoacationsNumber());
+}
 part1();
+//nefunguje
+//part2();
 exports.default = {};
