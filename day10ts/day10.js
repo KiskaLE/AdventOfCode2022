@@ -24,11 +24,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
+let cycle;
+let X;
+let count;
 function parseInput(url) {
     return fs.readFileSync(url).toString().split("\r\n");
 }
 function part1() {
+    cycle = 1;
+    X = 1;
+    count = 0;
     const lines = parseInput("input.txt");
-    console.log(lines);
+    lines.forEach((line) => {
+        if (line == "noop") {
+            noop();
+        }
+        else if (line.startsWith("addx")) {
+            const [command, value] = line.split(" ");
+            addx(parseInt(value));
+        }
+    });
+    console.log(count);
+}
+function noop() {
+    cycle++;
+    checkCycle();
+}
+function addx(value) {
+    for (let i = 0; i < 2; i++) {
+        cycle++;
+        if (i === 1) {
+            X += value;
+        }
+        checkCycle();
+    }
+}
+function checkCycle() {
+    if (cycle === 20 || (cycle > 0 && (cycle - 20) % 40 === 0)) {
+        count += cycle * X;
+    }
 }
 part1();
