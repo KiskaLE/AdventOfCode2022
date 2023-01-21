@@ -27,6 +27,7 @@ const fs = __importStar(require("fs"));
 let cycle;
 let X;
 let count;
+let screen;
 function parseInput(url) {
     return fs.readFileSync(url).toString().split("\r\n");
 }
@@ -37,21 +38,65 @@ function part1() {
     const lines = parseInput("input.txt");
     lines.forEach((line) => {
         if (line == "noop") {
-            noop();
+            noop(false);
         }
         else if (line.startsWith("addx")) {
             const [command, value] = line.split(" ");
-            addx(parseInt(value));
+            addx(parseInt(value), false);
         }
     });
     console.log(count);
 }
-function noop() {
+function part2() {
+    cycle = 1;
+    X = 1;
+    count = 0;
+    screen = [];
+    const lines = parseInput("input.txt");
+    lines.forEach((line) => {
+        if (line == "noop") {
+            noop(true);
+        }
+        else if (line.startsWith("addx")) {
+            const [command, value] = line.split(" ");
+            addx(parseInt(value), true);
+        }
+    });
+    console.log(drawScreen());
+}
+function drawScreen() {
+    let s = "";
+    for (let i = 0; i < screen.length; i++) {
+        if (i > 0 && i % 40 === 0) {
+            s += "\n";
+        }
+        s += screen[i];
+    }
+    return s;
+}
+function drawPixel() {
+    if (cycle > 40) {
+        cycle = 1;
+    }
+    if (Math.abs(cycle - 1 - X) <= 1) {
+        screen.push("#");
+    }
+    else {
+        screen.push(".");
+    }
+}
+function noop(part2) {
+    if (part2) {
+        drawPixel();
+    }
     cycle++;
     checkCycle();
 }
-function addx(value) {
+function addx(value, part2) {
     for (let i = 0; i < 2; i++) {
+        if (part2) {
+            drawPixel();
+        }
         cycle++;
         if (i === 1) {
             X += value;
@@ -65,3 +110,4 @@ function checkCycle() {
     }
 }
 part1();
+part2();
